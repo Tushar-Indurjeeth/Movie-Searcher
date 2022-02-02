@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useStoreRehydrated } from 'easy-peasy';
+import { Container } from 'react-bootstrap';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+import MovieModal from './components/MovieModal';
+import Home from './pages/Home';
+import Results from './pages/Results';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const isRehydrated = useStoreRehydrated();
+  const location = useLocation();
+  const state = location.state;
+
+  return isRehydrated ? (
+    <AppContainer>
+      <Routes location={state?.backgroundLocation || location}>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/:query" element={<Results />} />
+      </Routes>
+
+      {state?.backgroundLocation && (
+        <Routes>
+          <Route path="/:query" element={<MovieModal />} />
+        </Routes>
+      )}
+    </AppContainer>
+  ) : (
+    <div>Loading...</div>
   );
 }
+
+const AppContainer = styled(Container)`
+  background-color: #f8f8ff; ;
+`;
 
 export default App;
