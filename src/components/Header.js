@@ -9,6 +9,7 @@ import logo from './imdb-logo.png';
 const Header = () => {
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
+  const favourites = useStoreState((state) => state.movies.favourites);
 
   const switchViewAction = useStoreActions(
     (actions) => actions.cardView.switchView
@@ -20,7 +21,13 @@ const Header = () => {
     e.preventDefault();
     switchViewAction();
 
-    console.log('Card view: ' + isCardView);
+    // console.log('Card view: ' + isCardView);
+  };
+
+  const viewFavourites = (e) => {
+    e.preventDefault();
+
+    navigate(`../favourites`);
   };
 
   const search = (e) => {
@@ -50,7 +57,13 @@ const Header = () => {
         </Button>
 
         <ButtonGroup>
-          <Button variant="light">View favourites</Button>
+          <Button
+            variant="light"
+            onClick={viewFavourites}
+            disabled={favourites.length < 1}
+          >
+            View favourites
+          </Button>
           <Button variant="light" onClick={switchView}>
             {`${isCardView ? 'Change to Card View' : 'Change to List view'}`}
           </Button>
@@ -121,7 +134,7 @@ const ButtonGroup = styled.div`
     margin-left: 1rem;
   }
 
-  .btn {
+  .btn-light {
     padding: 0.75rem;
     border-radius: 0.375rem;
     --ring-color: #e5e7eb;
@@ -141,6 +154,10 @@ const ButtonGroup = styled.div`
 
     :active {
       --ring-color: #d1d5db;
+    }
+
+    :disabled {
+      cursor: not-allowed !important;
     }
   }
 `;

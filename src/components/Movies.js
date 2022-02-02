@@ -2,9 +2,11 @@ import { dummyData } from './dummyData';
 import MovieCard from './MovieCard';
 import { Col, Row } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
+import { useStoreState } from 'easy-peasy';
 
 const Movies = ({ query }) => {
   const location = useLocation();
+  const favourites = useStoreState((state) => state.movies.favourites);
 
   //   const [movies, setMovies] = useState([]);
 
@@ -34,18 +36,30 @@ const Movies = ({ query }) => {
   return (
     <div>
       <Row xs={1} md={3} lg={4} className="g-4">
-        {/* {movies.map((movie) => ( */}
-        {dummyData.Search.map((movie) => (
-          <Link
-            key={movie.imdbID}
-            to={`/results/?query=${query}`}
-            state={{ backgroundLocation: location }}
-          >
-            <Col>
-              <MovieCard movie={movie} />
-            </Col>
-          </Link>
-        ))}
+        {query
+          ? // {movies.map((movie) => (
+            dummyData.Search.map((movie) => (
+              <Link
+                key={movie.imdbID}
+                to={`/results/?query=${query}`}
+                state={{ backgroundLocation: location }}
+              >
+                <Col>
+                  <MovieCard movie={movie} />
+                </Col>
+              </Link>
+            ))
+          : favourites.map((movie) => (
+              <Link
+                key={movie.imdbID}
+                to={`/favourites`}
+                state={{ backgroundLocation: location }}
+              >
+                <Col>
+                  <MovieCard movie={movie} />
+                </Col>
+              </Link>
+            ))}
       </Row>
     </div>
   );

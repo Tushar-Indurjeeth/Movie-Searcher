@@ -36,7 +36,7 @@ const MovieModal = () => {
     console.log(`Favourites ${isFavourite}`);
   };
 
-  // console.log(`Adding movie details... ${movieDetails}`);
+  console.log(`Adding movie details... ${movieDetails}`);
   return (
     <Modal
       onHide={() => changeVisibility()}
