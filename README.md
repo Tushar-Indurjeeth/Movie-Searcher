@@ -1,5 +1,5 @@
 # Movie-Searcher
-A fully responsive React app that allows you to search movies from the [Movie Databas](https://rapidapi.com/rapidapi/api/movie-database-imdb-alternative) database.
+A fully responsive React app that allows you to search movies from the [Movie Database (IMDB Alternative)](https://rapidapi.com/rapidapi/api/movie-database-imdb-alternative) database.
 
 ## Live Demo
 [https://movie-searcher-46d7f.web.app/](https://movie-searcher-46d7f.web.app/)
