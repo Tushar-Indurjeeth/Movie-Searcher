@@ -21,7 +21,7 @@ A fully responsive React app that allows you to search for movies from [Movie Da
 - [better-react-spinkit](https://www.npmjs.com/package/better-react-spinkit)
 
 ## Platform
-Hosted through [Firebase](https://firebase.google.com/)
+Hosted through [Firebase](https://firebase.google.com/).
 
 ## License
 Code released under the [MIT License](https://github.com/Tushar-Indurjeeth/Movie-Searcher/blob/fb3e0bbee6c3059b51175e360b5311531125c5bc/LICENSE).
