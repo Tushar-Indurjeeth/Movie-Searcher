@@ -1,11 +1,16 @@
 import { useStoreActions, useStoreState } from 'easy-peasy';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import styled from 'styled-components';
 
 const MovieModal = () => {
   const showModal = useStoreState((state) => state.modalView.showModal);
-  const movieDetails = useStoreState((state) => state.modalView.movieDetails);
+  const movieCardDetails = useStoreState(
+    (state) => state.modalView.movieDetails
+  );
   const isFavourite = useStoreState((state) => state.movies.isFavourite);
+
+  const [movieDetails, setMovieDetails] = useState({});
 
   const changeVisibility = useStoreActions(
     (actions) => actions.modalView.displayModal
@@ -16,27 +21,52 @@ const MovieModal = () => {
   );
 
   useEffect(() => {
-    checkFavourite(movieDetails.imdbID);
-    console.log(`${isFavourite}`);
+    checkFavourite(movieCardDetails.imdbID);
+  }, [checkFavourite, movieCardDetails.imdbID]);
 
-    return () => {};
-  }, [checkFavourite, isFavourite, movieDetails.imdbID]);
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        await fetch(
+          `https://movie-database-imdb-alternative.p.rapidapi.com/?i=${movieCardDetails.imdbID}&r=json`,
+          {
+            method: 'GET',
+            headers: {
+              'x-rapidapi-host': process.env.REACT_APP_RAPIDAPI_HOST,
+              'x-rapidapi-key': process.env.REACT_APP_RAPIDAPI_KEY,
+            },
+            signal: abortController.signal,
+          }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            setMovieDetails(data);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [movieCardDetails.imdbID]);
 
   const removeMovie = useStoreActions((actions) => actions.movies.removeMovie);
   const addMovie = useStoreActions((actions) => actions.movies.addMovie);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // checkFavourite(movieDetails.imdbID);
 
-    isFavourite ? removeMovie(movieDetails) : addMovie(movieDetails);
+    isFavourite ? removeMovie(movieCardDetails) : addMovie(movieCardDetails);
 
-    checkFavourite(movieDetails.imdbID);
-
-    console.log(`Favourites ${isFavourite}`);
+    checkFavourite(movieCardDetails.imdbID);
   };
 
-  console.log(`Adding movie details... ${movieDetails}`);
   return (
     <Modal
       onHide={() => changeVisibility()}
@@ -48,23 +78,41 @@ const MovieModal = () => {
         <Modal.Title id="contained-modal-title-vcenter">More Info:</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>
-          {`Movie name: ${movieDetails.Title}`}
-          <br />
-          {`Year Released: ${movieDetails.Year}`}
-          <br />
-          {`Type: ${movieDetails.Type}`}
-          <br />
-          {`IMDB ID: ${movieDetails.imdbID}`}
-        </p>
+        {Object.entries(movieDetails).map(([key, value]) => (
+          <div key={key}>
+            {key !== 'Ratings' ? (
+              <StyledParagraph key={key}>
+                <b>{`${key}: `}</b>
+                {value}
+              </StyledParagraph>
+            ) : (
+              <>
+                {value.map((item) => (
+                  <StyledParagraph key={item.Source}>
+                    <b>{`${item.Source}: `}</b>
+                    {item.Value}
+                  </StyledParagraph>
+                ))}
+              </>
+            )}
+          </div>
+        ))}
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={onSubmit}>{`${
-          (isFavourite && `Remove from Favourites`) || `Add to Favourites`
+        <Button
+          variant={`${(isFavourite && 'danger') || 'primary'}`}
+          onClick={onSubmit}
+        >{`${
+          (isFavourite && 'Remove from Favourites') || 'Add to Favourites'
         }`}</Button>
       </Modal.Footer>
     </Modal>
   );
 };
+
+const StyledParagraph = styled.p`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 export default MovieModal;

@@ -10,7 +10,6 @@ const Results = () => {
 
   return (
     <Container fluid>
-      <h1>Results Page</h1>
       <NavigationBar />
       <Movies query={searchQuery} />
     </Container>

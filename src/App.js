@@ -3,6 +3,7 @@ import { useStoreRehydrated } from 'easy-peasy';
 import { Container } from 'react-bootstrap';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import Loading from './components/Loading';
 import MovieModal from './components/MovieModal';
 import Favourites from './pages/Favourites';
 import Home from './pages/Home';
@@ -30,7 +31,7 @@ function App() {
       )}
     </AppContainer>
   ) : (
-    <div>Loading...</div>
+    <Loading />
   );
 }
 

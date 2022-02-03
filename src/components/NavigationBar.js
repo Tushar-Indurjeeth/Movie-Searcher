@@ -1,4 +1,4 @@
-import { useStoreState } from 'easy-peasy';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 import { useRef } from 'react';
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   Nav,
   Navbar,
 } from 'react-bootstrap';
+
 import { Link, useNavigate } from 'react-router-dom';
 
 const NavigationBar = () => {
@@ -15,26 +16,42 @@ const NavigationBar = () => {
   const navigate = useNavigate();
   const favourites = useStoreState((state) => state.movies.favourites);
 
+  const switchViewAction = useStoreActions(
+    (actions) => actions.cardView.switchView
+  );
+
+  const isCardView = useStoreState((state) => state.cardView.isCardView);
+
   const search = (e) => {
     e.preventDefault();
 
-    const term = searchInputRef.current.value;
+    let term = searchInputRef.current.value;
 
     if (!term) return;
+    term = term.trim();
+
+    term = term.replaceAll(' ', '%20');
 
     navigate(`../results/?query=${term}`);
   };
 
+  const switchView = (e) => {
+    e.preventDefault();
+    switchViewAction();
+  };
+
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      variant="dark"
+      style={{ marginTop: '1.5rem' }}
+    >
       <Container fluid>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="me-auto my-2 my-lg-0 "
-            style={{ maxHeight: '100px' }}
-            navbarScroll
-          >
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
@@ -46,7 +63,13 @@ const NavigationBar = () => {
             >
               Favourites
             </Nav.Link>
-            <Nav.Link href="#">Card view</Nav.Link>
+            <Nav>
+              <Nav.Link as={Button} variant="link" onClick={switchView}>
+                {`${
+                  isCardView ? 'Change to List View' : 'Change to Card view'
+                }`}
+              </Nav.Link>
+            </Nav>
           </Nav>
 
           <Form className="d-flex">
