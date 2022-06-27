@@ -1,9 +1,6 @@
 # Movie Searcher
 A fully responsive React app that allows you to search for movies from [Movie Database (IMDB Alternative)](https://rapidapi.com/rapidapi/api/movie-database-imdb-alternative).
 
-## Live Demo
-[https://movie-searcher-46d7f.web.app/](https://movie-searcher-46d7f.web.app/)
-
 ## User flow
 - App loads with a search bar and a view favourites button. The favourites button opens a list of favourites.
 - User types a search string for a title by name.
